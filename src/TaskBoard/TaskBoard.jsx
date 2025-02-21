@@ -10,12 +10,7 @@ const TaskBoard = () => {
     const { user } = useAuth();
     const [tasks, setTasks] = useState([]);
     const [showForm, setShowForm] = useState(false);
-
-    const handleAddTask = (newTask) => {
-        setTasks([...tasks, newTask]);
-        setShowForm(false);
-    };
-
+    const [editTask, setEditTask] = useState(null);
 
     useEffect(() => {
         if (user?.email) {
@@ -23,19 +18,29 @@ const TaskBoard = () => {
                 .then((res) => setTasks(res.data))
                 .catch(error => console.log('Error fetching task', error))
         }
-    }, [user])
+    }, [user]);
+
+    const handleAddTask = (newTask) => {
+        setTasks([...tasks, newTask]);
+        setShowForm(false);
+    };
+
+    const handleDeleteTask = (taskId) => {
+        setTasks(tasks.filter(task => task._id !== taskId))
+    }
 
     return (
         <div className='p-4'>
             <button onClick={() => setShowForm(true)} className='mb-4 bg-green-500 text-white px-4 py-1'>Add New Task</button>
             {
                 showForm && (
-                    <TaskForm handleAddTask={handleAddTask} user={user} onclose={() => setShowForm(false)}></TaskForm>
+                    <TaskForm handleAddTask={handleAddTask} user={user} task={editTask} onClose={() => {setShowForm(false); setEditTask(null)}}></TaskForm>
                 )
             }
             <div className='grid grid-cols-3 gap-4 '>
                 {categories.map((category) => (
-                    <TaskColumn key={category} category={category} tasks={tasks.filter(task => task.category === category)}></TaskColumn>
+                    <TaskColumn key={category} category={category} tasks={tasks.filter(task => task.category === category)} 
+                    onEdit={(task)=> {setEditTask(task); setShowForm(true)}} onDelete={handleDeleteTask}></TaskColumn>
                 ))}
             </div>
         </div>
