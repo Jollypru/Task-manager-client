@@ -22,11 +22,8 @@ const TaskForm = ({user, handleAddTask, onClose}) => {
 
         try{
             const response =await axios.post('http://localhost:5000/tasks', newTask);
-            if (response.data.success) {
-                handleAddTask(response.data.task);
-                toast.success('New Task added!')
-                onclose();
-            }
+           handleAddTask(response.data.task);
+           toast.success('New task added!')
         }catch(error){
             console.log('Error adding task', error);
         }finally{
