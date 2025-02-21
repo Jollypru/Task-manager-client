@@ -2,7 +2,7 @@
 import { useAuth } from './providers/AuthProvider'
 import Login from './Login/Login';
 import Navbar from './components/Navbar';
-import Home from './Home/Home';
+import TaskBoard from './TaskBoard/TaskBoard';
 
 function App() {
   const {user, loading, googleSignIn, logout} = useAuth();
@@ -12,7 +12,7 @@ function App() {
       <Navbar user={user} login={googleSignIn} logout={logout}></Navbar>
      {
       user? (
-        <Home></Home>
+        <TaskBoard></TaskBoard>
       ) : (
         <Login login={googleSignIn}></Login>
       )

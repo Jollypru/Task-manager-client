@@ -1,6 +1,7 @@
 import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signInWithRedirect, signOut } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import auth from "../../firebase.config";
+import axios from "axios";
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -17,8 +18,13 @@ const AuthProvider = ({ children }) => {
             const result = await signInWithPopup(auth, googleProvider);
             const signedInUser = result.user;
             console.log(signedInUser);
-            // Set user state to the signed-in user
             setUser(signedInUser);
+
+            axios.post('http://localhost:5000/users', {
+                email: signedInUser.email,
+                displayName: signedInUser.displayName
+            })
+            
         }finally{
             setLoading(false);
         }       
