@@ -4,6 +4,7 @@ import TaskForm from '../TaskForm/TaskForm';
 import { useAuth } from '../providers/AuthProvider';
 import axios from 'axios';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
+import { useFetcher } from 'react-router-dom';
 
 const categories = ['To-Do', 'In Progress', 'Done']
 
@@ -20,6 +21,20 @@ const TaskBoard = () => {
                 .catch(error => console.log('Error fetching task', error))
         }
     }, [user]);
+
+    useEffect(() => {
+        const ws = new WebSocket('ws://localhost:5001');
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if(data.type === 'update'){
+                axios.get(`http://localhost:5000/tasks?email=${user?.email}`)
+                .then((res) => setTasks(res.data))
+                .catch(error => console.log('Error fetching task', error))
+            }
+        }
+        return () => ws.close();
+    }, [user])
 
     const handleAddTask = (newTask) => {
         setTasks([...tasks, newTask]);

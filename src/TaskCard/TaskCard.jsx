@@ -16,7 +16,7 @@ const TaskCard = ({ task,index, onEdit, onDelete }) => {
 
         } catch (error) {
             toast.error('Error deleting task')
-        }
+        } 
     }
     return (
         <Draggable draggableId={task._id} index={index}>
