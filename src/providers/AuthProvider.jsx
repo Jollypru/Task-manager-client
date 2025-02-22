@@ -20,7 +20,7 @@ const AuthProvider = ({ children }) => {
             console.log(signedInUser);
             setUser(signedInUser);
 
-            axios.post('http://localhost:5000/users', {
+            axios.post('https://task-manager-server-83w7.onrender.com/users', {
                 email: signedInUser.email,
                 displayName: signedInUser.displayName
             })

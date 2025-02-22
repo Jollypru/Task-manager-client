@@ -28,11 +28,11 @@ const TaskForm = ({ user, task, handleAddTask, onClose }) => {
 
         try {
             if(task){
-                await axios.put(`http://localhost:5000/tasks/${task._id}`, newTask);
+                await axios.put(`https://task-manager-server-83w7.onrender.com/tasks/${task._id}`, newTask);
                 handleAddTask({...newTask, _id: task._id, timeStamp: task.timeStamp})
                 toast.success("Task updated successfully!");
             }else{
-                const response = await axios.post('http://localhost:5000/tasks', newTask);
+                const response = await axios.post('https://task-manager-server-83w7.onrender.com/tasks', newTask);
                 handleAddTask(response.data.task);
                 toast.success('New task added!')
             }

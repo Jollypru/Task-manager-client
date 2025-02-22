@@ -16,19 +16,19 @@ const TaskBoard = () => {
 
     useEffect(() => {
         if (user?.email) {
-            axios.get(`http://localhost:5000/tasks?email=${user?.email}`)
+            axios.get(`https://task-manager-server-83w7.onrender.com/tasks?email=${user?.email}`)
                 .then((res) => setTasks(res.data))
                 .catch(error => console.log('Error fetching task', error))
         }
     }, [user]);
 
     useEffect(() => {
-        const ws = new WebSocket('ws://localhost:5001');
+        const ws = new WebSocket('wss://task-manager-server-83w7.onrender.com');
 
         ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
             if(data.type === 'update'){
-                axios.get(`http://localhost:5000/tasks?email=${user?.email}`)
+                axios.get(`https://task-manager-server-83w7.onrender.com/tasks?email=${user?.email}`)
                 .then((res) => setTasks(res.data))
                 .catch(error => console.log('Error fetching task', error))
             }
@@ -52,24 +52,26 @@ const TaskBoard = () => {
         if (source.index === destination.index && source.droppableId === destination.droppableId) return;
 
         const updatedTasks = [...tasks];
-        const [movedTask] = updatedTasks.splice(source.index, 1);
+        const movedTaskIndex = updatedTasks.findIndex(task => task._id === result.draggableId)
+        const [movedTask] = updatedTasks.splice(movedTaskIndex, 1);
         movedTask.category = destination.droppableId;
+
         updatedTasks.splice(destination.index, 0, movedTask);
 
         setTasks(updatedTasks);
-        axios.post('http://localhost:5000/tasks/reorder', {tasks: updatedTasks })
+        axios.post('https://task-manager-server-83w7.onrender.com/tasks/reorder', {tasks: updatedTasks })
         .catch(error => console.log('Error updating the task'))
     }
     return (
         <div className='p-4'>
-            <button onClick={() => setShowForm(true)} className='mb-4 bg-green-500 text-white px-4 py-1'>Add New Task</button>
+            <button onClick={() => setShowForm(true)} className='my-4 bg-green-500 text-white px-4 py-1'>Add New Task</button>
             {
                 showForm && (
                     <TaskForm handleAddTask={handleAddTask} user={user} task={editTask} onClose={() => { setShowForm(false); setEditTask(null) }}></TaskForm>
                 )
             }
             <DragDropContext onDragEnd={handleDragEnd}>
-                <div className='grid grid-cols-3 gap-4 '>
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-4 '>
                     {categories.map((category) => (
                         <Droppable key={category} droppableId={category}>
                         {(provided) => (
@@ -78,7 +80,7 @@ const TaskBoard = () => {
                                 tasks={tasks.filter(task => task.category === category)}
                                 onEdit={(task) => { setEditTask(task); setShowForm(true); }}
                                 onDelete={handleDeleteTask}
-                                provided={provided} // passing droppable provided
+                                provided={provided}
                             />
                         )}
                     </Droppable>

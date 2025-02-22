@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 const TaskCard = ({ task,index, onEdit, onDelete }) => {
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`http://localhost:5000/tasks/${task._id}`);
+            const response = await axios.delete(`https://task-manager-server-83w7.onrender.com/tasks/${task._id}`);
             if (response.status === 200) {
                 toast.success('Task deleted!');
                 onDelete(task._id)
