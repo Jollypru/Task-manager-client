@@ -6,7 +6,6 @@ const TaskForm = ({ user, task, handleAddTask, onClose }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('To-Do');
-    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (task) {
@@ -26,11 +25,11 @@ const TaskForm = ({ user, task, handleAddTask, onClose }) => {
         const newTask = {
             title, description, category, userEmail: user?.email
         }
-        setLoading(true);
 
         try {
             if(task){
                 await axios.put(`http://localhost:5000/tasks/${task._id}`, newTask);
+                handleAddTask({...newTask, _id: task._id, timeStamp: task.timeStamp})
                 toast.success("Task updated successfully!");
             }else{
                 const response = await axios.post('http://localhost:5000/tasks', newTask);
@@ -40,8 +39,6 @@ const TaskForm = ({ user, task, handleAddTask, onClose }) => {
            onClose();
         } catch (error) {
             console.log('Error adding task', error);
-        } finally {
-            setLoading(false);
         }
     }
     return (
@@ -67,7 +64,7 @@ const TaskForm = ({ user, task, handleAddTask, onClose }) => {
                     </div>
                     <div className='flex items-center gap-5'>
                         <button onClick={onClose} className="px-4 py-2 bg-gray-400 text-white rounded">Cancel</button>
-                        <button type='submit' disabled={loading} className="px-4 py-2 bg-blue-500 text-white rounded">{task ? "Update" : "Add"}</button>
+                        <button type='submit' className="px-4 py-2 bg-blue-500 text-white rounded">{task ? "Update" : "Add"}</button>
                     </div>
                 </form>
             </div>
