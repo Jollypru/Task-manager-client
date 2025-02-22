@@ -23,7 +23,7 @@ const TaskBoard = () => {
     }, [user]);
 
     useEffect(() => {
-        const ws = new WebSocket(`wss://${window.location.host}`);
+        const ws = new WebSocket('wss://task-manager-server-83w7.onrender.com');
 
         ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
